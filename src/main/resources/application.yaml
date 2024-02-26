@@ -10,3 +10,12 @@ spring:
 server:
   port: 8082
 
+
+logging:
+  level:
+    com:
+      example:
+        searchexample:
+          controller: DEBUG
+          util: DEBUG
+

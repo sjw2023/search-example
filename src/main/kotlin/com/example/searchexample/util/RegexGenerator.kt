@@ -1,5 +1,6 @@
 package com.example.searchexample.util
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 class GetRegExpOptions(
@@ -13,8 +14,10 @@ class GetRegExpOptions(
     val nonCaptureGroup: Boolean? = true
 ) {
 }
+
 @Component
 class RegexGenerator {
+    private val log = LoggerFactory.getLogger(this.javaClass)!!
 
     private val BASE = 44032
     private val INITIALS =
@@ -83,7 +86,7 @@ class RegexGenerator {
         'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅛ', 'ㅜ', 'ㅠ', 'ㅡ', 'ㅣ',
     )
 
-    private fun escapeRegExp(str: String?) : String{
+    private fun escapeRegExp(str: String?): String {
         val reRegExpChar = Regex("""[\\^$.*+?()\[\]{}|]""")
         val reHasRegExpChar = Regex(reRegExpChar.pattern)
         return str?.let {
@@ -95,13 +98,13 @@ class RegexGenerator {
         } ?: ""
     }
 
-
-    private fun genInitialRegex(initial : String, allowOnlyInitial: Boolean=false, initialOffset: Int): String{
+    private fun genInitialRegex(initial: String, allowOnlyInitial: Boolean = false, initialOffset: Int): String {
         val baseCode = initialOffset * MEDIALS.size * FINALES.size + BASE
-        var toRet : String = "[" + if (allowOnlyInitial && initial.length > 1) initial else ""
+        var toRet: String = "[" + if (allowOnlyInitial && initial.length > 1) initial else ""
         toRet += String(Character.toChars(baseCode)) + "-" + String(Character.toChars(baseCode + MEDIALS.size * FINALES.size - 1)) + "]"
         return toRet
     }
+
     private fun getInitialSearchRegExp(initial: String, allowOnlyInitial: Boolean = false): String {
         val initialOffset = INITIALS.indexOf(initial)
 
@@ -156,14 +159,12 @@ class RegexGenerator {
         var frontChars = search.toCharArray().toList()
         val lastChar = frontChars.lastOrNull()?.toString() ?: ""
         var lastCharPattern = ""
-
         val phonemes = getPhonemes(lastChar)
 
         if (phonemes.initialOffset != -1) {
             frontChars = frontChars.dropLast(1)
             val (initial, medial, finale, initialOffset, medialOffset) = phonemes
             val baseCode = initialOffset * MEDIALS.size * FINALES.size + BASE
-
             val patterns = mutableListOf<String>()
             when {
                 finale.isNotBlank() -> {
@@ -201,7 +202,6 @@ class RegexGenerator {
 
                 initial.isNotBlank() -> {
                     patterns.add(getInitialSearchRegExp(initial, true))
-                    println("Regex : "+ patterns)
                 }
             }
             lastCharPattern = if (patterns.size > 1) "(${patterns.joinToString("|")})" else patterns[0]
@@ -220,6 +220,8 @@ class RegexGenerator {
             if (options.global == true) append(RegexOption.LITERAL)
             if (options.ignoreCase == true) append(RegexOption.IGNORE_CASE)
         }
+
+        log.debug("Regular expression pattern {}", pattern)
         return Regex(pattern, RegexOption.valueOf(regexOptions))
     }
 }

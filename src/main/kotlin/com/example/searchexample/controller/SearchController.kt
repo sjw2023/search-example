@@ -3,6 +3,7 @@ package com.example.searchexample.controller
 import com.example.searchexample.dto.SearchRequestDto
 import com.example.searchexample.dto.SearchResponseDto
 import com.example.searchexample.service.SearchService
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -13,16 +14,17 @@ import org.springframework.web.bind.annotation.RestController
 class SearchController (
     val searchService: SearchService
 ){
+    private val log = LoggerFactory.getLogger(this.javaClass)!!
     @GetMapping
     fun searchWithName( @RequestBody searchRequestDto: SearchRequestDto ) : ResponseEntity<SearchResponseDto>{
         val result = searchService.searchWithName( searchRequestDto )
-        println(result)
+        log.debug("Result {}", result)
         return ResponseEntity.ok().body(SearchResponseDto())
     }
     @PostMapping("/regex")
     fun getRegex( @RequestBody searchRequestDto: SearchRequestDto) : ResponseEntity<List<com.example.searchexample.repository.Users>>{
         val result = searchService.getRegex(searchRequestDto)
-        println("result : " + result)
+        log.debug("Result {}", result)
         return ResponseEntity.ok().body(result)
     }
 }
