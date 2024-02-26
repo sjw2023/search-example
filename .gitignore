@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ### properties file ###
-resources/application.yaml
+src/main/resources/application.yaml
 
 ### Kotlin ###
 .kotlin
