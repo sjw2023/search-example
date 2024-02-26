@@ -95,12 +95,19 @@ class RegexGenerator {
         } ?: ""
     }
 
+
+    private fun genInitialRegex(initial : String, allowOnlyInitial: Boolean=false, initialOffset: Int): String{
+        val baseCode = initialOffset * MEDIALS.size * FINALES.size + BASE
+        var toRet : String = "[" + if (allowOnlyInitial && initial.length > 1) initial else ""
+        toRet += String(Character.toChars(baseCode)) + "-" + String(Character.toChars(baseCode + MEDIALS.size * FINALES.size - 1)) + "]"
+        return toRet
+    }
     private fun getInitialSearchRegExp(initial: String, allowOnlyInitial: Boolean = false): String {
         val initialOffset = INITIALS.indexOf(initial)
+
         return if (initialOffset != -1) {
-            val baseCode = initialOffset * MEDIALS.size * FINALES.size + BASE
-            "[" + if (allowOnlyInitial) "$initial]" else "" + String(Character.toChars(baseCode)) + "-" + String(
-                Character.toChars(baseCode + MEDIALS.size * FINALES.size - 1)) + "]"
+            genInitialRegex(initial, allowOnlyInitial, initialOffset)
+
         } else {
             initial
         }
@@ -194,10 +201,12 @@ class RegexGenerator {
 
                 initial.isNotBlank() -> {
                     patterns.add(getInitialSearchRegExp(initial, true))
+                    println("Regex : "+ patterns)
                 }
             }
             lastCharPattern = if (patterns.size > 1) "(${patterns.joinToString("|")})" else patterns[0]
         }
+
         val glue = if (options.fuzzy == true) FUZZY else if (options.ignoreSpace == true) IGNORE_SPACE else ""
         val frontCharsPattern = if (options.initialSearch == true) frontChars.joinToString(glue) { char ->
             if (char in 'ㄱ'..'ㅎ') getInitialSearchRegExp(char.toString(), true) else escapeRegExp(char.toString())
@@ -211,7 +220,6 @@ class RegexGenerator {
             if (options.global == true) append(RegexOption.LITERAL)
             if (options.ignoreCase == true) append(RegexOption.IGNORE_CASE)
         }
-
         return Regex(pattern, RegexOption.valueOf(regexOptions))
     }
 }

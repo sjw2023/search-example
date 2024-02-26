@@ -16,7 +16,6 @@ class SearchService (
         return userRepository.findUserByName( searchRequestDto.name )
     }
     fun getRegex(searchRequestDto: SearchRequestDto) : List<Users>{
-
         return userRepository.findUsersByNameRegex(regexGenerator.getRegExp(searchRequestDto.name).pattern)
     }
 }

@@ -21,6 +21,8 @@ class SearchController (
     }
     @PostMapping("/regex")
     fun getRegex( @RequestBody searchRequestDto: SearchRequestDto) : ResponseEntity<List<com.example.searchexample.repository.Users>>{
-        return ResponseEntity.ok().body(searchService.getRegex(searchRequestDto))
+        val result = searchService.getRegex(searchRequestDto)
+        println("result : " + result)
+        return ResponseEntity.ok().body(result)
     }
 }
