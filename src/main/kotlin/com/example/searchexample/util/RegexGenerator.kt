@@ -107,10 +107,8 @@ class RegexGenerator {
 
     private fun getInitialSearchRegExp(initial: String, allowOnlyInitial: Boolean = false): String {
         val initialOffset = INITIALS.indexOf(initial)
-
         return if (initialOffset != -1) {
             genInitialRegex(initial, allowOnlyInitial, initialOffset)
-
         } else {
             initial
         }
