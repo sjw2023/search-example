@@ -1,12 +1,10 @@
 package com.example.searchexample.repository
 
-import org.springframework.data.jdbc.repository.query.Query
-import org.springframework.data.repository.CrudRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 
-@Repository
-interface UserRepository : CrudRepository<Users, String> {
+interface JpaUserRepository : JpaRepository<Users, String>, JpaSpecificationExecutor<Users> {
     fun findUserByName( name : String ) : List<Users>
-    @Query("SELECT * FROM users WHERE name regexp :namePattern")
-    fun findUsersByNameRegex(namePattern: String): List<Users>
+//    @Query("SELECT name FROM users WHERE name regexp :namePattern")
+//    fun findUsersByNameRegex(namePattern: String): List<Users>
 }

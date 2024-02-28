@@ -4,6 +4,8 @@ import com.example.searchexample.dto.SearchRequestDto
 import com.example.searchexample.dto.SearchResponseDto
 import com.example.searchexample.service.SearchService
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

@@ -1,7 +1,15 @@
 package com.example.searchexample.repository
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Table
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 
-@Table("USERS")
-data class Users(@Id var id : Int, val name : String )
+@Entity
+@Table(name="users")
+data class Users(
+    @Id
+    @GeneratedValue
+    var id : Int=0,
+    val name : String=""
+)
